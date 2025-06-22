@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "238565008877",
+    "project_id": "bproductive-app",
+    "storage_bucket": "bproductive-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238565008877:android:604b5efceea61e27c7f3e4",
+        "android_client_info": {
+          "package_name": "com.bproductive.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7kKwEgcp3SWwS0v7ex1ZFJk-Q4kMcbek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
