@@ -5,38 +5,42 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
+  Alert
 } from 'react-native';
+
 import { auth } from '../firebase';
 import {
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithCredential,
+  signInWithCredential
 } from 'firebase/auth';
-import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
-import Constants from 'expo-constants';
 
+import * as WebBrowser from 'expo-web-browser';
+import { useAuthRequest } from 'expo-auth-session/providers/google';
+import { makeRedirectUri } from 'expo-auth-session';
+
+// Ensure Expo completes any pending auth sessions
 WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: "238565008877-j5tqhh85tqlhd10tah7qkhlpohemtqh5.apps.googleusercontent.com",
-    androidClientId: "238565008877-j5tqhh85tqlhd10tah7qkhlpohemtqh5.apps.googleusercontent.com", // Add this line
+  const [request, response, promptAsync] = useAuthRequest({
+    expoClientId: '238565008877-j5tqhh85tqlhd10tah7qkhlpohemtqh5.apps.googleusercontent.com',
+    androidClientId: '238565008877-j5tqhh85tqlhd10tah7qkhlpohemtqh5.apps.googleusercontent.com',
+    redirectUri: makeRedirectUri({ useProxy: true }),
+    scopes: ['profile', 'email'],
   });
 
   useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
+    if (response?.type === 'success' && response.authentication?.idToken) {
+      const { idToken } = response.authentication;
+      const credential = GoogleAuthProvider.credential(idToken);
       signInWithCredential(auth, credential)
         .then(() => {
           Alert.alert('Signed in with Google ☁️');
-          navigation.replace('ToDo');
+          navigation.replace('ToDo'); // ✅ Navigate to your main screen
         })
         .catch((error) => {
           Alert.alert('Google Sign-In Error', error.message);
@@ -47,26 +51,16 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      Alert.alert('Welcome back! 🎉', `You're now logged in as ${email}`);
+      Alert.alert('Welcome back! 🎉');
       navigation.replace('ToDo');
     } catch (error) {
       Alert.alert('Login Error', error.message);
     }
   };
 
-  const handleSignup = async () => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      Alert.alert('Account created 🎉', 'Now you can log in!');
-    } catch (error) {
-      Alert.alert('Signup Error', error.message);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>☁️ BProductive</Text>
-      <Text style={styles.subtitle}>Peek Inside!!</Text>
 
       <TextInput
         style={styles.input}
@@ -74,8 +68,8 @@ export default function LoginScreen({ navigation }) {
         placeholderTextColor="#B0C4DE"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
         autoCapitalize="none"
+        keyboardType="email-address"
       />
 
       <TextInput
@@ -91,7 +85,7 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.buttonText}>☁️ Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleSignup}>
+      <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
         <Text style={styles.signupText}>Don’t have an account? Sign up</Text>
       </TouchableOpacity>
 
@@ -113,18 +107,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#E6ECF0',
     flex: 1,
     justifyContent: 'center',
+    alignContent: 'center'
   },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
     color: '#2E4057',
     marginBottom: 15,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 15,
-    color: '#2E4057',
-    marginBottom: 30,
     textAlign: 'center',
   },
   input: {
