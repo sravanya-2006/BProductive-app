@@ -3,7 +3,7 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCAOFyTAuisjc-ZigKREhFFPms7IjDe_7M",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY, // or a similar variable name
   authDomain: "bproductive-app.firebaseapp.com",
   projectId: "bproductive-app",
   storageBucket: "bproductive-app.appspot.com",

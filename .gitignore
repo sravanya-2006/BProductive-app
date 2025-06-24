@@ -35,3 +35,10 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+
+# Ignore secrets and sensitive files
+google-services.json
+firebase-debug.log
+client_secret_*
+.env
